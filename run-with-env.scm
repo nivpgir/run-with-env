@@ -37,35 +37,6 @@
       (display  +usage+) (newline)
       (exit 1)))
 
-(define (unrecognised-option-proc option name arg seed)
-  (error 'test "unknown option" option name arg))
-
-(define (make-seed)
-  (make-string-table))
-
-(define (make-option-processor key)
-  (lambda (option name arg seed)
-    ;; (table-set! seed key (cons arg (table-ref seed key)))
-    (table-set! seed key (or arg #t))
-    seed))
-
-(define (make-operand-processor key)
-  (lambda (operand seed)
-    ;; (table-set! seed key (cons operand (table-ref seed key)))
-    (table-set! seed operand operand)
-    seed))
-
-
-(define opt-table (args-fold command-line-arguments
-                             (list (option '(#\e) #t #t (make-option-processor "env-file"))
-                                   (option '(#\d) #t #t (make-option-processor "debug")))
-                             unrecognised-option-proc
-                             ;; (make-operand-processor "0")
-                             (lambda (arg seed) seed)
-                             (make-seed)))
-
-;; (table-walk (lambda (k v) (display k) (display ": ") (display v) (newline)) opt-table)
-
 (define (parse-envar-file p)
   (define string->envar-pair (infix-splitter  "="  -1))
   (let parse-line-from-file ((env-list '())
